@@ -1,0 +1,41 @@
+<section class="sidebar">
+  <div class="sidebar__header">
+    <img src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"
+        mat-card-avatar alt="avatar">
+    <div class="sidebar__header__icons">
+      <button mat-icon-button>
+        <mat-icon>donut_large</mat-icon>
+      </button>
+      <button mat-icon-button>
+        <mat-icon>chat</mat-icon>
+      </button>
+      <button [mat-menu-trigger-for]="menu" mat-icon-button>
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>Logout</button>
+        <button mat-menu-item>Settings</button>
+      </mat-menu>
+    </div>
+
+  </div>
+
+  <!--  SIDEBAR-->
+  <div class="sidebar__search"></div>
+  <div class="sidebar__search__content">
+    <form #form="ngForm" (ngSubmit)="onFormSubmit(form)">
+      <button mat-icon-button class="sidebar__search__content__icon">
+        <mat-icon>search_outline</mat-icon>
+      </button>
+      <input type="text" class="sidebar__search__content__input" name="search" ngModel="" placeholder="Search or start new chat">
+      <button type="submit" style="display: none;"></button>
+    </form>
+  </div>
+
+  <div class="sidebar__content">
+    <ng-container>
+      <app-sidebar-content></app-sidebar-content>
+    </ng-container>
+  </div>
+
+</section>

@@ -4,6 +4,7 @@ import {MainContainerComponent} from './components/main-container/main-container
 import {ChatRoomComponent} from './components/main-container/chat-area/chat-room/chat-room.component';
 import {ChatDefaultPageComponent} from './components/main-container/chat-area/chat-default-page/chat-default-page.component';
 import {LoginComponent} from './components/login/login.component';
+import {ChatGuard} from './guards/chat.guard';
 
 const routes: Routes = [
   {
@@ -11,14 +12,15 @@ const routes: Routes = [
     component: MainContainerComponent,
     children: [
       {
-        path: 'room:/:id',
+        path: 'room/:id',
         component: ChatRoomComponent
       },
       {
         path: '',
         component: ChatDefaultPageComponent
       }
-      ]
+    ],
+    canActivate: [ChatGuard]
   },
   {
     path: 'login',

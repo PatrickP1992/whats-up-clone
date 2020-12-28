@@ -64,10 +64,28 @@
   }
 
   &__content{
-    //overflow-y: scroll;
-    overflow-scrolling: auto;
+    overflow-y: scroll;
+    //overflow-scrolling: auto;
     flex: 1;
     margin: 5px;
 
   }
+}
+
+// Custom Scroll Bar
+::-webkit-scrollbar{
+  width: 5px;
+}
+
+::-webkit-scrollbar-track{
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb{
+  background: #888;
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background: #555;
 }

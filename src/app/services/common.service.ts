@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {BehaviorSubject, Observable} from 'rxjs';
-import User from '../../../node_modules/firebase';
-import auth from '../../../node_modules/firebase';
+import {User} from 'firebase';
+import {auth} from 'firebase/app';
 import {Router} from '@angular/router';
 import UserCredential = firebase.auth.UserCredential;
 
@@ -19,7 +19,9 @@ export class CommonService {
   pathParam: Observable<string>;
 
   // Angular Fire User
-  private user: User;
+  // Angular Fire User
+
+  private user!: User;
 
   constructor(private afs: AngularFirestore,
               private afAuth: AngularFireAuth,

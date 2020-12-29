@@ -8,7 +8,7 @@ import {CommonService} from '../../services/common.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private commonService:CommonService) { }
+  constructor(private commonService: CommonService) { }
 
   ngOnInit(): void {
   }

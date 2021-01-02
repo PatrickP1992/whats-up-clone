@@ -58,7 +58,7 @@ export class CommonService {
     });
   }
 
-  updatePathParamState(newPathParam: string): void {
+  updatePathParamState(newPathParam: string | null): void {
     this.pathParamState.next(newPathParam);
   }
 
@@ -73,3 +73,4 @@ export interface RoomData {
   name: string;
   id?: string;
 }
+

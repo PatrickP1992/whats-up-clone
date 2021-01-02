@@ -1,18 +1,18 @@
-//isUser-uid ==m.user_id
 <div class="chat__area">
-  <ng-container>
+  <ng-container *ngIf="messageData?.length > 0; else noData">
     <div class="chat__area__message"
          [ngClass]="{
-         'chat__area__message-owner': true
+         'chat__area__message-owner': isUser.uid == m.user_id
          }"
+         *ngFor="let m of messageData"
     >
-      <span class="chat__area__message__name">John Doe</span>
-      <span class="chat__area__message__text">Hello</span>
-      <span class="chat__area__message__time">10.50pm</span>
+      <span class="chat__area__message__name">{{m?.name}}</span>
+      <span class="chat__area__message__text">{{m.message}}</span>
+      <span class="chat__area__message__time">{{ m?.time?.seconds * 1000 | date:'mediumTime'}}</span>
     </div>
   </ng-container>
 
-  <ng-template>
+  <ng-template #noData>
     <h1 style="text-align: center;">No Messages</h1>
   </ng-template>
 </div>

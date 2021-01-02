@@ -13,7 +13,7 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>Logout</button>
+        <button mat-menu-item (click)="logout()">Logout</button>
         <button mat-menu-item>Settings</button>
       </mat-menu>
     </div>
@@ -33,8 +33,8 @@
   </div>
 
   <div class="sidebar__content">
-    <ng-container>
-      <app-sidebar-content></app-sidebar-content>
+    <ng-container *ngFor="let r of roomData; let i=index">
+      <app-sidebar-content [roomData]="r" [randomSeed]="randomSeed[i]" (seedValue)="seedData($event)"></app-sidebar-content>
     </ng-container>
   </div>
 

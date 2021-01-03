@@ -8,9 +8,12 @@
       <button mat-icon-button>
         <mat-icon>search_outline</mat-icon>
       </button>
-      <button mat-icon-button>
+
+      <button mat-icon-button (click)="hiddenfileinput.click()">
         <mat-icon class="file">attach_file</mat-icon>
       </button>
+      <input style="display: none" type="file" id="file" (change)="onFileSelected($event)" #hiddenfileinput>
+
       <button mat-icon-button>
         <mat-icon>more_vert</mat-icon>
       </button>

@@ -59,7 +59,9 @@ export class CommonService {
   }
 
   updatePathParamState(newPathParam: string | null): void {
-    this.pathParamState.next(newPathParam);
+    if (newPathParam != null) {
+      this.pathParamState.next(newPathParam);
+    }
   }
 
   getUser(): User {

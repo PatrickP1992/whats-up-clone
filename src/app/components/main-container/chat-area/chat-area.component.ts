@@ -48,4 +48,14 @@ export class ChatAreaComponent implements OnInit {
       ev.chatData.subscribe((roomName: string) => this.roomName = roomName);
     }
   }
+
+  onFileSelected(event: any): void{
+    const file = event.target.files[0];
+    const type = file.type;
+
+    if (type.indexOf('image') !== 0){
+      console.log(type + ' is not an image');
+    } else {
+      console.log(file);
+    }}
 }

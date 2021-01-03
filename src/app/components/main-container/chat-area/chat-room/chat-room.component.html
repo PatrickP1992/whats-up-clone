@@ -1,5 +1,5 @@
 <div class="chat__area">
-  <ng-container *ngIf="messageData?.length > 0; else noData">
+  <ng-container *ngIf="messageData.length > 0; else noData">
     <div class="chat__area__message"
          [ngClass]="{
          'chat__area__message-owner': isUser.uid == m.user_id

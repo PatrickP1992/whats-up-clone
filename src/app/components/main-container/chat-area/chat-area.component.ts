@@ -1,9 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {CommonService} from '../../../services/common.service';
-import {Subscription} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import {AngularFirestore} from '@angular/fire/firestore';
 import * as firebase from 'firebase';
+import {AngularFireStorage, AngularFireStorageModule} from '@angular/fire/storage';
+import {finalize} from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-chat-area',
@@ -15,9 +18,12 @@ export class ChatAreaComponent implements OnInit {
   subs!: Subscription;
   paramValue!: string;
   roomName!: string;
+  downloadURL: Observable<string> | undefined;
+  fb: string | undefined;
 
   constructor(private commonService: CommonService,
-              private afs: AngularFirestore) {
+              private afs: AngularFirestore,
+              private storage: AngularFireStorage) {
   }
 
   ngOnInit(): void {
@@ -57,5 +63,27 @@ export class ChatAreaComponent implements OnInit {
       console.log(type + ' is not an image');
     } else {
       console.log(file);
+      const n = Date.now();
+      const filePath = `messages/${n}`;
+      const fileRef = this.storage.ref(filePath);
+      const task = this.storage.upload(`messages/${n}`, file);
+      task
+        .snapshotChanges()
+        .pipe(
+          finalize(() => {
+            this.downloadURL = fileRef.getDownloadURL();
+            this.downloadURL.subscribe(url => {
+              if (url) {
+                this.fb = url;
+              }
+              console.log(this.fb);
+            });
+          })
+        )
+        .subscribe(url => {
+          if (url) {
+            console.log(url);
+          }
+        });
     }}
 }

@@ -107,39 +107,33 @@ export class ChatAreaComponent implements OnInit {
     const type = file.type;
     const filename = file.name;
 
-    if (isImage) {
-      if (permission === 'granted') {
-        this.showNotificationUploaded(filename);
-      } else if (permission !== 'denied') {
-        Notification.requestPermission().then(getPermission => {
-          if (getPermission === 'granted') {
-            this.showNotificationUploaded(filename);
-          }
-        });
-      } else {
-        console.log(`${filename}: has been uploaded`);
-      }
+
+    if (permission === 'granted') {
+      this.showNotificationUpload(filename, type, isImage);
+    } else if (permission !== 'denied') {
+      Notification.requestPermission().then(getPermission => {
+        if (getPermission === 'granted') {
+          this.showNotificationUpload(filename, type, isImage);
+        }
+      });
+    } else if (permission === 'denied' && isImage) {
+      alert(`${filename}: has been uploaded`);
     } else {
-      if (permission === 'granted') {
-        this.showNotificationNotUploaded(filename, type);
-      } else if (permission !== 'denied') {
-        Notification.requestPermission().then(getPermission => {
-          if (getPermission === 'granted') {
-            this.showNotificationNotUploaded(filename, type);
-          }
-        });
-      } else {
-        console.log('Image hasn\'t been uploaded\n' + `${filename}: ${type.split('/')[1]} is not an image`);
-      }
+      alert('Image hasn\'t been uploaded\n' + `${filename}: ${type.split('/')[1]} is not an image`);
     }
+
   }
 
-  showNotificationNotUploaded(filename: string, type: string): void {
-    const notification = new Notification('Image hasn\'t been uploaded', {body: `${filename}: ${type.split('/')[1]} is not an image`});
-  }
-
-  showNotificationUploaded(filename: string): void {
-    const notification = new Notification(`${filename}: has been uploaded`, {body: ``});
-
+  showNotificationUpload(filename: string, type: string, isImage: boolean): void {
+    let mTitle;
+    let message;
+    if (isImage) {
+      mTitle = `${filename}: has been uploaded`;
+      message = '';
+    } else {
+      mTitle = 'Image hasn\'t been uploaded';
+      message = `${filename}: ${type.split('/')[1]} is not an image`;
+    }
+    const notification = new Notification(mTitle, {body: message});
   }
 }

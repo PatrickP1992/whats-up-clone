@@ -6,6 +6,7 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import * as firebase from 'firebase';
 import {AngularFireStorage, AngularFireStorageModule} from '@angular/fire/storage';
 import {finalize} from 'rxjs/operators';
+import {aliasTransformFactory} from '@angular/compiler-cli/src/ngtsc/transform';
 
 
 @Component({
@@ -34,7 +35,7 @@ export class ChatAreaComponent implements OnInit {
   }
 
   formSubmit(form: NgForm): void {
-    if (form.invalid){
+    if (form.invalid) {
       return;
     }
 
@@ -50,23 +51,31 @@ export class ChatAreaComponent implements OnInit {
   }
 
   chatData(ev: any): void {
-    if (ev.chatData !== undefined){
+    if (ev.chatData !== undefined) {
       ev.chatData.subscribe((roomName: string) => this.roomName = roomName);
     }
   }
 
-  onFileSelected(event: any): void{
+  /**
+   *  Function for Uploading Images to Database (firestorage: images/)
+   */
+  onFileSelected(event: any): void {
     const file = event.target.files[0];
     const type = file.type;
+    const filename = file.name;
+    // Notification API stuff
+    let isImage: boolean;
 
-    if (type.indexOf('image') !== 0){
-      console.log(type + ' is not an image');
+    if (type.indexOf('image') !== 0) {
+      isImage = false;
+      // show notification if file is not an image
+      this.getPermission(isImage, file);
     } else {
       console.log(file);
-      const n = Date.now();
-      const filePath = `messages/${n}`;
+      const filePath = `images/${filename}`;
       const fileRef = this.storage.ref(filePath);
-      const task = this.storage.upload(`messages/${n}`, file);
+      const task = this.storage.upload(filePath, file);
+      isImage = true;
       task
         .snapshotChanges()
         .pipe(
@@ -77,13 +86,60 @@ export class ChatAreaComponent implements OnInit {
                 this.fb = url;
               }
               console.log(this.fb);
+              this.getPermission(isImage, file);
             });
           })
-        )
-        .subscribe(url => {
-          if (url) {
-            console.log(url);
+        ).subscribe(url => {
+        if (url) {
+          console.log(url);
+        }
+      });
+    }
+  }
+
+  /**
+   * Method for showing web notifications -> asking for permission to show notifications, etc.
+   * @param isImage
+   * @param file
+   */
+  getPermission(isImage: boolean, file: any): void {
+    const permission = Notification.permission;
+    const type = file.type;
+    const filename = file.name;
+
+    if (isImage) {
+      if (permission === 'granted') {
+        this.showNotificationUploaded(filename);
+      } else if (permission !== 'denied') {
+        Notification.requestPermission().then(getPermission => {
+          if (getPermission === 'granted') {
+            this.showNotificationUploaded(filename);
           }
         });
-    }}
+      } else {
+        console.log(`${filename}: has been uploaded`);
+      }
+    } else {
+      if (permission === 'granted') {
+        this.showNotificationNotUploaded(filename, type);
+      } else if (permission !== 'denied') {
+        Notification.requestPermission().then(getPermission => {
+          if (getPermission === 'granted') {
+            this.showNotificationNotUploaded(filename, type);
+          }
+        });
+      } else {
+        console.log('Image hasn\'t been uploaded\n' + `${filename}: ${type.split('/')[1]} is not an image`);
+      }
+    }
+  }
+
+  showNotificationNotUploaded(filename: string, type: string): void {
+    const notification = new Notification('Image hasn\'t been uploaded', {body: `${filename}: ${type.split('/')[1]} is not an image`});
+  }
+
+  showNotificationUploaded(filename: string): void {
+    const notification = new Notification(`${filename}: has been uploaded`, {body: ``});
+
+  }
 }

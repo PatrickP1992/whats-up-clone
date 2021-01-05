@@ -30,7 +30,7 @@ export class ChatAreaComponent implements OnInit {
   ngOnInit(): void {
     this.subs = this.commonService.pathParam.subscribe(value => {
       this.paramValue = value;
-      console.log(this.paramValue);
+      // console.log('\nKey: ' + this.paramValue);
     });
   }
 
@@ -48,6 +48,10 @@ export class ChatAreaComponent implements OnInit {
       name: this.commonService.getUser().displayName,
       time: firebase.firestore.FieldValue.serverTimestamp()
     });
+
+    // Push Notification for messages
+    this.getPermissionMessage(this.commonService.getUser().displayName, message);
+
   }
 
   chatData(ev: any): void {
@@ -69,12 +73,14 @@ export class ChatAreaComponent implements OnInit {
     if (type.indexOf('image') !== 0) {
       isImage = false;
       // show notification if file is not an image
-      this.getPermissionForNotification(isImage, file);
+      this.getPermissionUpload(isImage, file);
     } else {
       console.log(file);
       // we add time so we can upload the same image multiple times to our database
       const time = Date.now();
-      const filePath = `images/${filename}_${time}`;
+      /*const filePath = `images/${filename}_${time}`;*/
+      // maybe needed, this only adds a route for the specific chatroom
+      const filePath = `images/${this.paramValue}/${filename}_${time}`;
       const fileRef = this.storage.ref(filePath);
       const task = this.storage.upload(filePath, file);
       isImage = true;
@@ -88,7 +94,7 @@ export class ChatAreaComponent implements OnInit {
                 this.fb = url;
               }
               console.log(this.fb);
-              this.getPermissionForNotification(isImage, file);
+              this.getPermissionUpload(isImage, file);
             });
           })
         ).subscribe(url => {
@@ -99,12 +105,13 @@ export class ChatAreaComponent implements OnInit {
     }
   }
 
+  /* ******************** Permissions ******************** */
   /**
    * Method for showing web notifications -> asking for permission to show notifications, etc.
    * @param isImage
    * @param file
    */
-  getPermissionForNotification(isImage: boolean, file: any): void {
+  getPermissionUpload(isImage: boolean, file: any): void {
     const permission = Notification.permission;
     const type = file.type;
     const filename = file.name;
@@ -122,9 +129,31 @@ export class ChatAreaComponent implements OnInit {
     } else {
       alert('Image hasn\'t been uploaded\n' + `${filename}: ${type.split('/')[1]} is not an image`);
     }
-
   }
 
+  getPermissionMessage(username: string | null, message: string): void {
+    const permission = Notification.permission;
+
+    if (permission === 'granted') {
+      this.showNotificationMessage(username, message);
+    } else if (permission !== 'denied') {
+      Notification.requestPermission().then(getPermission => {
+        if (getPermission === 'granted') {
+          this.showNotificationMessage(username, message);
+        }
+      });
+    } else {
+      console.log('rejected push notifications');
+    }
+  }
+
+  /* ******************** Permissions ******************** */
+  /**
+   * Notification for Upload
+   * @param filename
+   * @param type
+   * @param isImage
+   */
   showNotificationUpload(filename: string, type: string, isImage: boolean): void {
     let mTitle;
     let message;
@@ -135,6 +164,12 @@ export class ChatAreaComponent implements OnInit {
       mTitle = 'Image hasn\'t been uploaded';
       message = `${filename}: ${type.split('/')[1]} is not an image`;
     }
-    const notification = new Notification(mTitle, {body: message});
+    const notification = new Notification(mTitle, {body: message, silent: false});
+  }
+
+  showNotificationMessage(name: string | null, message: string): void {
+    const mTitle = `${name} sent a new message in ${this.roomName}`;
+
+    const notification = new Notification(mTitle, {body: message, silent: true});
   }
 }

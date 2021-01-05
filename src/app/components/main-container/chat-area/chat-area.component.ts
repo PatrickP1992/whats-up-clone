@@ -69,10 +69,12 @@ export class ChatAreaComponent implements OnInit {
     if (type.indexOf('image') !== 0) {
       isImage = false;
       // show notification if file is not an image
-      this.getPermission(isImage, file);
+      this.getPermissionForNotification(isImage, file);
     } else {
       console.log(file);
-      const filePath = `images/${filename}`;
+      // we add time so we can upload the same image multiple times to our database
+      const time = Date.now();
+      const filePath = `images/${filename}_${time}`;
       const fileRef = this.storage.ref(filePath);
       const task = this.storage.upload(filePath, file);
       isImage = true;
@@ -86,7 +88,7 @@ export class ChatAreaComponent implements OnInit {
                 this.fb = url;
               }
               console.log(this.fb);
-              this.getPermission(isImage, file);
+              this.getPermissionForNotification(isImage, file);
             });
           })
         ).subscribe(url => {
@@ -102,11 +104,10 @@ export class ChatAreaComponent implements OnInit {
    * @param isImage
    * @param file
    */
-  getPermission(isImage: boolean, file: any): void {
+  getPermissionForNotification(isImage: boolean, file: any): void {
     const permission = Notification.permission;
     const type = file.type;
     const filename = file.name;
-
 
     if (permission === 'granted') {
       this.showNotificationUpload(filename, type, isImage);

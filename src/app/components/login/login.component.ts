@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {AuthService} from '../../services/auth.service';
 import {CommonService} from '../../services/common.service';
 
 @Component({
@@ -8,12 +9,8 @@ import {CommonService} from '../../services/common.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private commonService: CommonService) { }
+  constructor(public authService: AuthService) { }
 
   ngOnInit(): void {
-  }
-
-  login(): void {
-    this.commonService.loginWithGoogle();
   }
 }

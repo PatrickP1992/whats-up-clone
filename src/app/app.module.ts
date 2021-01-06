@@ -18,8 +18,11 @@ import {environment} from '../environments/environment';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {RouterModule} from '@angular/router';
-import {AngularFireStorageModule} from '@angular/fire/storage';
-import {AngularFireDatabaseModule} from '@angular/fire/database';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { SignUpComponent } from './components/sign-up/sign-up.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
+import {AuthService} from './services/auth.service';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,11 @@ import {AngularFireDatabaseModule} from '@angular/fire/database';
     ChatAreaComponent,
     ChatDefaultPageComponent,
     ChatRoomComponent,
-    LoginComponent
+    LoginComponent,
+    DashboardComponent,
+    SignUpComponent,
+    ForgotPasswordComponent,
+    VerifyEmailComponent,
   ],
   imports: [
     BrowserModule,
@@ -41,11 +48,10 @@ import {AngularFireDatabaseModule} from '@angular/fire/database';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,
-    RouterModule,
-    AngularFireStorageModule,
-    AngularFireDatabaseModule
+    RouterModule
+
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

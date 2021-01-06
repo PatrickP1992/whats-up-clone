@@ -59,9 +59,8 @@ export class CommonService {
   }
 
   updatePathParamState(newPathParam: string | null): void {
-    if (newPathParam != null) {
-      this.pathParamState.next(newPathParam);
-    }
+    // @ts-ignore
+    this.pathParamState.next(newPathParam);
   }
 
   getUser(): User {

@@ -30,7 +30,7 @@ export class ChatAreaComponent implements OnInit {
   ngOnInit(): void {
     this.subs = this.commonService.pathParam.subscribe(value => {
       this.paramValue = value;
-      // console.log('\nKey: ' + this.paramValue);
+      console.log('\nKey: ' + this.paramValue);
     });
   }
 
@@ -61,53 +61,61 @@ export class ChatAreaComponent implements OnInit {
   }
 
   /**
-   *  Function for Uploading Images to Database (firestorage: images/)
+   * Image Upload
+   *
+   * Function for uploading images to the Firestore database -> saved into storage
+   * @param event
    */
   onFileSelected(event: any): void {
-    const file = event.target.files[0];
-    const type = file.type;
-    const filename = file.name;
-    // Notification API stuff
-    let isImage: boolean;
+    if (this.paramValue !== '') {
+      const file = event.target.files[0];
+      const type = file.type;
+      const filename = file.name;
+      // Notification API stuff
+      let isImage: boolean;
 
-    if (type.indexOf('image') !== 0) {
-      isImage = false;
-      // show notification if file is not an image
-      this.getPermissionUpload(isImage, file);
+      if (type.indexOf('image') !== 0) {
+        isImage = false;
+        // show notification if file is not an image
+        this.getPermissionUpload(isImage, file);
+      } else {
+        console.log(file);
+        // we add time so we can upload the same image multiple times to our database
+        const time = Date.now();
+        /*const filePath = `images/${filename}_${time}`;*/
+        // maybe needed, this only adds a route for the specific chatroom
+        const filePath = `images/${this.paramValue}/${filename}_${time}`;
+        const fileRef = this.storage.ref(filePath);
+        const task = this.storage.upload(filePath, file);
+        isImage = true;
+        // complete the uploading task
+        task
+          .snapshotChanges()
+          .pipe(
+            finalize(() => {
+              this.downloadURL = fileRef.getDownloadURL();
+              this.downloadURL.subscribe(url => {
+                if (url) {
+                  this.fb = url;
+                }
+                console.log(this.fb);
+                this.getPermissionUpload(isImage, file);
+              });
+            })
+          ).subscribe(url => {
+          if (url) {
+            // console.log(url);
+          }
+        });
+      }
     } else {
-      console.log(file);
-      // we add time so we can upload the same image multiple times to our database
-      const time = Date.now();
-      /*const filePath = `images/${filename}_${time}`;*/
-      // maybe needed, this only adds a route for the specific chatroom
-      const filePath = `images/${this.paramValue}/${filename}_${time}`;
-      const fileRef = this.storage.ref(filePath);
-      const task = this.storage.upload(filePath, file);
-      isImage = true;
-      task
-        .snapshotChanges()
-        .pipe(
-          finalize(() => {
-            this.downloadURL = fileRef.getDownloadURL();
-            this.downloadURL.subscribe(url => {
-              if (url) {
-                this.fb = url;
-              }
-              console.log(this.fb);
-              this.getPermissionUpload(isImage, file);
-            });
-          })
-        ).subscribe(url => {
-        if (url) {
-          console.log(url);
-        }
-      });
+      alert('cannot send file if no room is chosen');
     }
   }
 
   /* ******************** Permissions ******************** */
   /**
-   * Method for showing web notifications -> asking for permission to show notifications, etc.
+   * Ask for permssion to show push notification -> show filename and if it was uploaded or not
    * @param isImage
    * @param file
    */
@@ -131,6 +139,11 @@ export class ChatAreaComponent implements OnInit {
     }
   }
 
+  /**
+   * Ask for permission to show push notifications -> show username and message
+   * @param username
+   * @param message
+   */
   getPermissionMessage(username: string | null, message: string): void {
     const permission = Notification.permission;
 
@@ -155,21 +168,43 @@ export class ChatAreaComponent implements OnInit {
    * @param isImage
    */
   showNotificationUpload(filename: string, type: string, isImage: boolean): void {
-    let mTitle;
-    let message;
+    let mTitle: string;
+    let message: string;
+    isImage === true ? mTitle = `${filename} has been uploaded` : mTitle = 'Image hasn\'t been uploaded';
+    isImage === true ? message = '' : message = `${filename}: ${type.split('/')[1]} is not an image`;
+
     if (isImage) {
-      mTitle = `${filename}: has been uploaded`;
-      message = '';
+      const notification = new Notification(mTitle,
+        {
+          body: message,
+          silent: true,
+          icon: 'assets/logo_transparent.png',
+        }
+      );
     } else {
-      mTitle = 'Image hasn\'t been uploaded';
-      message = `${filename}: ${type.split('/')[1]} is not an image`;
+      const notification = new Notification(mTitle,
+        {
+          body: message,
+          silent: false,
+          icon: 'assets/logo_transparent.png',
+          vibrate: [200, 50, 200] // makes the phone vibrate if user uses one
+        }
+      ).vibrate;
     }
-    const notification = new Notification(mTitle, {body: message, silent: false});
   }
 
+  /**
+   * Notification for new messages
+   * @param name
+   * @param message
+   */
   showNotificationMessage(name: string | null, message: string): void {
     const mTitle = `${name} sent a new message in ${this.roomName}`;
 
-    const notification = new Notification(mTitle, {body: message, silent: true});
+    const notification = new Notification(mTitle, {
+      body: message,
+      silent: true,
+      icon: 'assets/logo_transparent.png'
+    });
   }
 }

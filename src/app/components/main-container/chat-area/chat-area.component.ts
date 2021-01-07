@@ -8,7 +8,7 @@ import {AngularFireStorage, AngularFireStorageModule} from '@angular/fire/storag
 import {finalize} from 'rxjs/operators';
 import {aliasTransformFactory} from '@angular/compiler-cli/src/ngtsc/transform';
 import {AngularFireDatabase, AngularFireList} from '@angular/fire/database';
-
+import {User} from 'firebase';
 
 @Component({
   selector: 'app-chat-area',
@@ -22,18 +22,22 @@ export class ChatAreaComponent implements OnInit {
   roomName!: string;
   downloadURL: Observable<string> | undefined;
   fb: string | undefined;
+  currentUserId!: unknown;
+
   /*imageList: AngularFireList<any> | undefined;*/
 
   constructor(private commonService: CommonService,
               private afs: AngularFirestore,
               private storage: AngularFireStorage,
               private firedatabase: AngularFireDatabase) {
+    this.currentUserId = Object.values(JSON.parse(localStorage.getItem('user') as string))[0];
   }
 
   ngOnInit(): void {
     this.subs = this.commonService.pathParam.subscribe(value => {
       this.paramValue = value;
       // console.log('\nKey: ' + this.paramValue);
+      /*console.log(this.isUser);*/
     });
   }
 
@@ -57,7 +61,12 @@ export class ChatAreaComponent implements OnInit {
     });
 
     // Push Notification for messages
-    this.getPermissionMessage(this.commonService.getUser().displayName, message);
+    if (this.currentUserId !== this.commonService.getUser().uid) {
+      this.getPermissionMessage(this.commonService.getUser().displayName, message);
+      console.log('notification from other user message should be loaded');
+    } else {
+      console.log('User is the same as message writer');
+    }
 
   }
 
@@ -65,7 +74,7 @@ export class ChatAreaComponent implements OnInit {
    * Message with image
    *
    */
-   pictureSubmit(image: File): void {
+  pictureSubmit(image: File): void {
     this.afs.collection('rooms').doc(this.paramValue).collection('messages').add({
       image,
       user_id: this.commonService.getUser().uid,

@@ -9,6 +9,7 @@
       <span class="chat__area__message__name">{{m?.name}}</span>
       <span class="chat__area__message__text">{{m.message}}</span>
       <span class="chat__area__message__time">{{ m?.time?.seconds * 1000 | date:'dd.MM.YYYY, hh:mm':'CET'}}</span>
+      <img src="{{m?.imageUrl}}">
     </div>
   </ng-container>
 

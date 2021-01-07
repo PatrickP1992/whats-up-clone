@@ -23,6 +23,8 @@ export class ChatAreaComponent implements OnInit {
   downloadURL: Observable<string> | undefined;
   fb: string | undefined;
   currentUserId!: unknown;
+  imageUrl: string | undefined;
+  imageUploaded = false;
 
   /*imageList: AngularFireList<any> | undefined;*/
 
@@ -53,12 +55,14 @@ export class ChatAreaComponent implements OnInit {
     const {message} = form.value;
     form.resetForm();
 
+
     this.afs.collection('rooms').doc(this.paramValue).collection('messages').add({
       message,
       user_id: this.commonService.getUser().uid,
       name: this.commonService.getUser().displayName,
       time: firebase.firestore.FieldValue.serverTimestamp()
     });
+
 
     // Push Notification for messages
     if (this.currentUserId !== this.commonService.getUser().uid) {
@@ -70,17 +74,18 @@ export class ChatAreaComponent implements OnInit {
 
   }
 
-  /** CURRENTLY NOT WORKING
-   * Message with image
-   *
-   */
-  pictureSubmit(image: File): void {
-    this.afs.collection('rooms').doc(this.paramValue).collection('messages').add({
-      image,
-      user_id: this.commonService.getUser().uid,
-      name: this.commonService.getUser().displayName,
-      time: firebase.firestore.FieldValue.serverTimestamp()
-    });
+  imageSubmit(): void {
+    if (this.imageUploaded) {
+      this.afs.collection('rooms').doc(this.paramValue).collection('messages').add({
+        imageUrl: this.imageUrl,
+        user_id: this.commonService.getUser().uid,
+        name: this.commonService.getUser().displayName,
+        time: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        this.imageUrl = undefined;
+        this.imageUploaded = false;
+      });
+    }
   }
 
   chatData(ev: any): void {
@@ -126,6 +131,9 @@ export class ChatAreaComponent implements OnInit {
               this.downloadURL.subscribe(url => {
                 if (url) {
                   this.fb = url;
+                  this.imageUrl = url;
+                  this.imageUploaded = true;
+                  this.imageSubmit();
                 }
                 console.log(this.fb);
                 this.getPermissionUpload(isImage, file);

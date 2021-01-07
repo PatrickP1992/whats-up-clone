@@ -7,6 +7,7 @@ import * as firebase from 'firebase';
 import {AngularFireStorage, AngularFireStorageModule} from '@angular/fire/storage';
 import {finalize} from 'rxjs/operators';
 import {aliasTransformFactory} from '@angular/compiler-cli/src/ngtsc/transform';
+import {AngularFireDatabase, AngularFireList} from '@angular/fire/database';
 
 
 @Component({
@@ -21,19 +22,25 @@ export class ChatAreaComponent implements OnInit {
   roomName!: string;
   downloadURL: Observable<string> | undefined;
   fb: string | undefined;
+  /*imageList: AngularFireList<any> | undefined;*/
 
   constructor(private commonService: CommonService,
               private afs: AngularFirestore,
-              private storage: AngularFireStorage) {
+              private storage: AngularFireStorage,
+              private firedatabase: AngularFireDatabase) {
   }
 
   ngOnInit(): void {
     this.subs = this.commonService.pathParam.subscribe(value => {
       this.paramValue = value;
-      console.log('\nKey: ' + this.paramValue);
+      // console.log('\nKey: ' + this.paramValue);
     });
   }
 
+  /**
+   * Message upload to Firestore
+   * @param form
+   */
   formSubmit(form: NgForm): void {
     if (form.invalid) {
       return;
@@ -54,6 +61,19 @@ export class ChatAreaComponent implements OnInit {
 
   }
 
+  /** CURRENTLY NOT WORKING
+   * Message with image
+   *
+   */
+   pictureSubmit(image: File): void {
+    this.afs.collection('rooms').doc(this.paramValue).collection('messages').add({
+      image,
+      user_id: this.commonService.getUser().uid,
+      name: this.commonService.getUser().displayName,
+      time: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }
+
   chatData(ev: any): void {
     if (ev.chatData !== undefined) {
       ev.chatData.subscribe((roomName: string) => this.roomName = roomName);
@@ -62,7 +82,7 @@ export class ChatAreaComponent implements OnInit {
 
   /**
    * Image Upload
-   *
+   * IMPORTANT: currently every user gets a notification if someone uploads an image
    * Function for uploading images to the Firestore database -> saved into storage
    * @param event
    */
@@ -79,7 +99,8 @@ export class ChatAreaComponent implements OnInit {
         // show notification if file is not an image
         this.getPermissionUpload(isImage, file);
       } else {
-        console.log(file);
+        // console.log(file);
+        isImage = true;
         // we add time so we can upload the same image multiple times to our database
         const time = Date.now();
         /*const filePath = `images/${filename}_${time}`;*/
@@ -87,7 +108,6 @@ export class ChatAreaComponent implements OnInit {
         const filePath = `images/${this.paramValue}/${filename}_${time}`;
         const fileRef = this.storage.ref(filePath);
         const task = this.storage.upload(filePath, file);
-        isImage = true;
         // complete the uploading task
         task
           .snapshotChanges()
@@ -100,6 +120,8 @@ export class ChatAreaComponent implements OnInit {
                 }
                 console.log(this.fb);
                 this.getPermissionUpload(isImage, file);
+                // add function to send pic into the group
+                // this.pictureSubmit(file);
               });
             })
           ).subscribe(url => {

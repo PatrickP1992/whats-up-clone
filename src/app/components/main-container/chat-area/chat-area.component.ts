@@ -65,12 +65,15 @@ export class ChatAreaComponent implements OnInit {
 
 
     // Push Notification for messages
-    if (this.currentUserId !== this.commonService.getUser().uid) {
+    /**
+     * currently not working properly
+     */
+    /*if (this.currentUserId !== this.commonService.getUser().uid) {
       this.getPermissionMessage(this.commonService.getUser().displayName, message);
       console.log('notification from other user message should be loaded');
     } else {
       console.log('User is the same as message writer');
-    }
+    }*/
 
   }
 
@@ -96,7 +99,6 @@ export class ChatAreaComponent implements OnInit {
 
   /**
    * Image Upload
-   * IMPORTANT: currently every user gets a notification if someone uploads an image
    * Function for uploading images to the Firestore database -> saved into storage
    * @param event
    */
@@ -119,7 +121,7 @@ export class ChatAreaComponent implements OnInit {
         const time = Date.now();
         /*const filePath = `images/${filename}_${time}`;*/
         // maybe needed, this only adds a route for the specific chatroom
-        const filePath = `images/${this.paramValue}/${filename}_${time}`;
+        const filePath = `images/${this.roomName}_${this.paramValue}/${filename}_${time}`;
         const fileRef = this.storage.ref(filePath);
         const task = this.storage.upload(filePath, file);
         // complete the uploading task

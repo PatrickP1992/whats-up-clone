@@ -56,4 +56,13 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subs.map(s => s.unsubscribe());
   }
+
+  /**
+   * open new Tab if an image is clicked
+   * @param imageUrl
+   */
+  fullscreenImage(imageUrl: string): void {
+    const tab = window.open(imageUrl, '_blank');
+    tab !== null ? tab.focus() : console.error('tab is null');
+  }
 }

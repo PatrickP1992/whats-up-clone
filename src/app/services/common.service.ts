@@ -59,8 +59,9 @@ export class CommonService {
   }
 
   updatePathParamState(newPathParam: string | null): void {
-    // @ts-ignore
-    this.pathParamState.next(newPathParam);
+    if (newPathParam != null) {
+      this.pathParamState.next(newPathParam);
+    }
   }
 
   getUser(): User {
@@ -74,4 +75,3 @@ export interface RoomData {
   name: string;
   id?: string;
 }
-

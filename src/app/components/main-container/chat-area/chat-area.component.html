@@ -24,24 +24,24 @@
     <router-outlet (activate)="chatData($event)"></router-outlet>
   </div>
 
-<div class="chat__footer">
-  <button mat-icon-button>
-    <mat-icon>mood</mat-icon>
-  </button>
+  <div class="chat__footer">
+    <button mat-icon-button>
+      <mat-icon>mood</mat-icon>
+    </button>
 
-  <form #form="ngForm" (ngSubmit)="formSubmit(form)">
-    <input type="text"
-           ngModel=""
-           name="message"
-           placeholder="Type a message"
-           class="chat__footer__send-message"
-    >
+    <form #form="ngForm" (ngSubmit)="formSubmit(form)">
+      <input type="text"
+             ngModel=""
+             name="message"
+             placeholder="Type a message"
+             class="chat__footer__send-message"
+      >
 
-    <button type="submit" style="display: none;"></button>
-  </form>
+      <button type="submit" style="display: none;"></button>
+    </form>
 
-  <button mat-icon-button>
-    <mat-icon>mic</mat-icon>
-  </button>
-</div>
+    <button mat-icon-button>
+      <mat-icon>mic</mat-icon>
+    </button>
+  </div>
 </section>

@@ -17,7 +17,19 @@ const routes: Routes = [
   { path: 'register-user', component: SignUpComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   { path: 'forgot-password', component: ForgotPasswordComponent },
-  { path: 'verify-email-address', component: VerifyEmailComponent }
+  { path: 'verify-email-address', component: VerifyEmailComponent },
+  { path: 'home', component: MainContainerComponent,
+    children: [
+      {
+        path: 'room/:id',
+        component: ChatRoomComponent
+      },
+      {
+        path: '',
+        component: ChatDefaultPageComponent
+      }
+    ],
+    canActivate: [AuthGuard]}
 ];
 
 @NgModule({

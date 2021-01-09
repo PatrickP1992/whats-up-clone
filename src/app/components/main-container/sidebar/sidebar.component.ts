@@ -4,6 +4,7 @@ import {AngularFirestore} from '@angular/fire/firestore';
 import {CommonService, RoomData} from '../../../services/common.service';
 import {map} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
+import {AuthService} from '../../../services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,7 +19,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
   @Output() seedValue: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(private afs: AngularFirestore,
-              private commonService: CommonService) {
+              private commonService: CommonService,
+              public authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -89,6 +91,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this.commonService.logout();
+    this.authService.SignOut();
   }
 }

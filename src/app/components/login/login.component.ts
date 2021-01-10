@@ -9,8 +9,17 @@ import {CommonService} from '../../services/common.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(public authService: AuthService) { }
+  constructor(private authService: AuthService,
+              private commonService: CommonService) { }
 
   ngOnInit(): void {
+  }
+
+  loginGoogle(): void {
+    this.authService.GoogleAuth();
+  }
+
+  login(email: string, password: string): void {
+    this.authService.SignIn(email, password);
   }
 }

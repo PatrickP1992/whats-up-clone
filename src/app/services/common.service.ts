@@ -44,7 +44,7 @@ export class CommonService {
       if (data.user) {
         this.user = data.user;
         localStorage.setItem('user', JSON.stringify(this.user));
-        this.router.navigateByUrl('').then();
+        this.router.navigateByUrl('home').then();
       } else {
         localStorage.setItem('user', '');
       }

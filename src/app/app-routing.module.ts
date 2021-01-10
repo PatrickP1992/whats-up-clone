@@ -12,10 +12,9 @@ import {VerifyEmailComponent} from './components/verify-email/verify-email.compo
 import {AuthGuard} from './guards/auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/sign-in', pathMatch: 'full' },
+  { path: '', component: LoginComponent },
   { path: 'sign-in', component: LoginComponent },
   { path: 'register-user', component: SignUpComponent },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'verify-email-address', component: VerifyEmailComponent },
   { path: 'home', component: MainContainerComponent,
@@ -27,9 +26,14 @@ const routes: Routes = [
       {
         path: '',
         component: ChatDefaultPageComponent
+      },
+      {
+        path: 'dashboard',
+        component: DashboardComponent
       }
     ],
-    canActivate: [AuthGuard]}
+    canActivate: [ChatGuard]},
+  { path: 'login', component: LoginComponent },
 ];
 
 @NgModule({

@@ -136,4 +136,18 @@ export class AuthService {
     });
   }
 
+  // Change Username
+  changeUsername(name: string): void {
+    const user = firebase.auth().currentUser;
+
+    user?.updateProfile({
+      displayName: name
+    }).then(() => {
+      console.log('DisplayName changed');
+    }
+    ).catch((error) => {
+      console.log(error);
+    });
+}
+
 }

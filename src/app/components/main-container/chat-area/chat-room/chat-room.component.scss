@@ -1,54 +1,113 @@
-.chat__area{
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
+@media (min-width: 500px) {
+  .chat__area{
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
 
-  &__message{
-   position: relative;
-    width: fit-content;
-    max-width: 400px;
-    padding: 10px 10px 5px;
-    border-radius: 10px;
-    background-color: #f6f2f2;
-    margin: 3rem 0;
-
-    &:first-child{
-      margin-top: 2rem;
-    }
-
-    &__text{
-      font-size: small;
-      max-width: inherit;
-    }
-
-    &__name{
-      position: absolute;
-      top: -20px;
-      left:0;
-      font-size: small;
-      font-weight: bold;
-      width: 200px;
-    }
-
-    &__time{
+    &__message{
       position: relative;
-      right: 0;
-      bottom: 0;
-      margin-left: 10px;
-      font-size: x-small;
-      color: darkgray;
-    }
+      width: fit-content;
+      max-width: 400px;
+      padding: 10px 10px 5px;
+      border-radius: 10px;
+      background-color: #f6f2f2;
+      margin: 1rem 0;
 
-    &-owner{
-      margin-left: auto;
-      background-color: #dcf8c6;
-    }
+      &:first-child{
+        margin-top: 2rem;
+      }
 
+      &__text{
+        font-size: small;
+        max-width: inherit;
+      }
+
+      &__name{
+        position: absolute;
+        top: -20px;
+        left:0;
+        font-size: small;
+        font-weight: bold;
+        width: 200px;
+      }
+
+      &__time{
+        position: relative;
+        right: 0;
+        bottom: 0;
+        margin-left: 10px;
+        font-size: x-small;
+        color: darkgray;
+      }
+
+      &-owner{
+        margin-left: auto;
+        background-color: #dcf8c6;
+      }
+
+    }
+  }
+  // automatically resize image if its too big (inherits max-width 400px from message)
+  #thumbnail{
+    width: 100%;
+    height: auto;
   }
 }
-// automatically resize image if its too big (inherits max-width 400px from message)
-#thumbnail{
-  width: 100%;
-  height: auto;
+
+@media (max-width: 499px) {
+  .chat__area{
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+
+    &__message{
+      position: relative;
+      width: fit-content;
+      max-width: 200px;
+      padding: 5px 5px 5px;
+      border-radius: 5px;
+      background-color: #f6f2f2;
+      margin: 15px;
+
+      &:first-child{
+        margin-top: 2rem;
+      }
+
+      &__text{
+        font-size: small;
+        max-width: inherit;
+      }
+
+      &__name{
+        position: absolute;
+        top: -20px;
+        left:0;
+        font-size: small;
+        font-weight: bold;
+        width: 200px;
+      }
+
+      &__time{
+        position: relative;
+        right: 0;
+        bottom: 0;
+        margin-left: 10px;
+        font-size: x-small;
+        color: darkgray;
+      }
+
+      &-owner{
+        margin-left: auto;
+        background-color: #dcf8c6;
+      }
+
+    }
+  }
+  // automatically resize image if its too big (inherits max-width 400px from message)
+  #thumbnail{
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+  }
 }
 

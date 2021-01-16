@@ -1,14 +1,39 @@
-.login{
-  display: grid;
-  place-items: center;
-  height: 100%;
+@media (min-width: 500px) {
+  .login{
+    display: grid;
+    place-items: center;
+    height: 100%;
 
-  & > img{
-    margin-top: 100px;
-    height: 70%;
+    & > img{
+      margin-top: 100px;
+      height: 70%;
+    }
+
+    button img{
+      width: 300px;
+    }
+  }
+}
+@media (max-width: 499px) {
+  .login {
+    display: grid;
+    place-items: center;
+    height: 100%;
+
+    .btn-block{
+      align-self: end;
+      margin-bottom: 10px;
+    }
+    & > img {
+      margin-top: 0px;
+      max-width: 150px;
+      height: auto;
+    }
+
+    button img {
+      max-width: 200px;
+      height: auto;
+    }
   }
 
-  button img{
-    width: 300px;
-  }
 }

@@ -141,8 +141,9 @@ export class AuthService {
       displayName: user.email.split('@')[0],
       // @ts-ignore
       photoURL: user.photoURL,
-      emailVerified: user.emailVerified
+      emailVerified: user.emailVerified,
     };
+    this.changeUsername(userData.displayName);
     return userRef.set(userData, {
       merge: true
     });

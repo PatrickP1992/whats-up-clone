@@ -59,7 +59,7 @@ export class AuthService {
         up and returns promise */
         this.SendVerificationMail();
         // @ts-ignore
-        this.SetUserData(result.user);
+        this.SetUserDataRegistration(result.user);
       }).catch((error) => {
         window.alert(error.message);
       });
@@ -85,7 +85,7 @@ export class AuthService {
       });
   }
 
-  // Returns true when user is looged in and email is verified
+  // Returns true when user is logged in and email is verified
   get isLoggedIn(): boolean {
     const user = JSON.parse(localStorage.getItem('user') as string);
     return (user !== null && user.emailVerified !== false) ? true : false;
@@ -119,6 +119,26 @@ export class AuthService {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
+      // @ts-ignore
+      photoURL: user.photoURL,
+      emailVerified: user.emailVerified
+    };
+    return userRef.set(userData, {
+      merge: true
+    });
+  }
+
+  /**
+   * Set userdata for registration, displayName would've been null
+   * -> now its the first part of the email-address
+   * @param user - user data for usage
+   */
+  SetUserDataRegistration(user: User): Promise<void> {
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+    const userData: User = {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.email.split('@')[0],
       // @ts-ignore
       photoURL: user.photoURL,
       emailVerified: user.emailVerified

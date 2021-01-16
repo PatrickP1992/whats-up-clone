@@ -9,7 +9,7 @@
       <span class="chat__area__message__name">{{m?.name}}</span>
       <span class="chat__area__message__time">{{ m?.time?.seconds * 1000 | date:'dd.MM.YYYY, HH:mm':'CET'}} Uhr</span><br>
       <span class="chat__area__message__text">{{m.message}}</span>
-      <img id="thumbnail" src="{{m?.imageUrl}}" (click)="fullscreenImage(m?.imageUrl)">
+      <img id="thumbnail" src="{{m?.imageUrl}}" (click)="fullscreenImage(m?.imageUrl)"> <!-- onclick: open new tab with full sized image-->
     </div>
   </ng-container>
 

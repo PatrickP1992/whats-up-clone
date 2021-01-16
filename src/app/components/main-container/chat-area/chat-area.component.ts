@@ -43,7 +43,7 @@ export class ChatAreaComponent implements OnInit {
 
   /**
    * Message upload to Firestore
-   * @param form
+   * @param form - gets form inputs
    */
   formSubmit(form: NgForm): void {
     if (form.invalid) {
@@ -75,7 +75,11 @@ export class ChatAreaComponent implements OnInit {
 
   }
 
+  /**
+   * Submitting an image as a message
+   */
   imageSubmit(): void {
+    // this query is now redundant, since we added a new method imageSubmit
     if (this.imageUploaded) {
       this.afs.collection('rooms').doc(this.paramValue).collection('messages').add({
         imageUrl: this.imageUrl,
@@ -98,7 +102,7 @@ export class ChatAreaComponent implements OnInit {
   /**
    * Image Upload
    * Function for uploading images to the Firestore database -> saved into storage
-   * @param event
+   * @param event - gets us the click event with the file
    */
   onFileSelected(event: any): void {
     if (this.paramValue !== '') {
@@ -161,8 +165,8 @@ export class ChatAreaComponent implements OnInit {
   /* ******************** Permissions ******************** */
   /**
    * Ask for permssion to show push notification -> show filename and if it was uploaded or not
-   * @param isImage
-   * @param file
+   * @param isImage - value in the name, different approaches if file isn't an image
+   * @param file - we get file data to use
    */
   getPermissionUpload(isImage: boolean, file: any): void {
     const permission = Notification.permission;
@@ -191,8 +195,8 @@ export class ChatAreaComponent implements OnInit {
 
   /**
    * Ask for permission to show push notifications -> show username and message
-   * @param username
-   * @param message
+   * @param username - current users username
+   * @param message - message data
    */
   getPermissionMessage(username: string | null, message: string): void {
     const permission = Notification.permission;
@@ -213,9 +217,9 @@ export class ChatAreaComponent implements OnInit {
   /* ******************** Permissions ******************** */
   /**
    * Notification for Upload
-   * @param filename
-   * @param type
-   * @param isImage
+   * @param filename - data for notfiication
+   * @param type - more data
+   * @param isImage - different approaches if file isn't an image
    */
   showNotificationUpload(filename: string, type: string, isImage: boolean): void {
     let mTitle: string;
@@ -245,8 +249,8 @@ export class ChatAreaComponent implements OnInit {
 
   /**
    * Notification for new messages
-   * @param name
-   * @param message
+   * @param name - data to show
+   * @param message - data to show
    */
   showNotificationMessage(name: string | null, message: string): void {
     const mTitle = `${name} sent a new message in ${this.roomName}`;

@@ -65,4 +65,6 @@ export class ChatRoomComponent implements OnInit, OnDestroy {
     const tab = window.open(imageUrl, '_blank');
     tab !== null ? tab.focus() : console.error('tab is null');
   }
+
+
 }

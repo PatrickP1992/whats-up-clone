@@ -1,5 +1,7 @@
 .chat__area{
   padding: 30px;
+  display: flex;
+  flex-direction: column;
 
   &__message{
    position: relative;
@@ -44,9 +46,9 @@
 
   }
 }
-
+// automatically resize image if its too big (inherits max-width 400px from message)
 #thumbnail{
   width: 100%;
-  max-width: 400px;
   height: auto;
 }
+

@@ -22,4 +22,6 @@ const modules = [
     ...modules
   ]
 })
-export class MaterialModule { }
+export class MaterialModule {
+  hide = true;
+}

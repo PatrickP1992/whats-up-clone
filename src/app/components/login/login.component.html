@@ -1,5 +1,31 @@
 <div class="login">
   <img src="assets/logo.jpg" alt="logo">
+
+  <button mat-stroked-button color="accent" class="btn-block" routerLink="/register-user">Sign up</button>
+
+  <div class="login-wrapper" fxLayout="row" fxLayoutAlign="center center">
+
+    <mat-card class="box">
+      <mat-card-header>
+        <mat-card-title>Log in with Email</mat-card-title>
+      </mat-card-header>
+
+      <form class="login-email" (submit)="login(email.value, password.value)">
+        <mat-card-content>
+          <mat-form-field class="example-full-width">
+            <input matInput #email placeholder="Email">
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+            <input matInput [type]="'password'" #password placeholder="Password">
+          </mat-form-field>
+        </mat-card-content>
+        <button mat-stroked-button color="accent" class="btn-block">Log in</button>
+      </form>
+    </mat-card>
+
+  </div>
+
   <button mat-raised-button (click)="loginGoogle()">
     <img src="assets/google1.jpg" alt="google">
   </button>

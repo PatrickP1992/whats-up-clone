@@ -12,11 +12,11 @@ import {AuthService} from '../../../services/auth.service';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit, OnDestroy {
+  @Output() seedValue: EventEmitter<string> = new EventEmitter<string>();
   randomSeed: any[] = [];
   roomData: RoomData[] = [];
   lastMessage!: string;
   subs: Subscription[] = [];
-  @Output() seedValue: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(private afs: AngularFirestore,
               private commonService: CommonService,
@@ -96,5 +96,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.authService.SignOut();
+  }
+
+  onClickDashboard(): void {
+     this.seedValue.emit('Profile');
   }
 }

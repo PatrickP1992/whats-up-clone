@@ -4,7 +4,7 @@ import {CommonService} from '../../../services/common.service';
 import {Observable, Subscription} from 'rxjs';
 import {AngularFirestore} from '@angular/fire/firestore';
 import * as firebase from 'firebase';
-import {AngularFireStorage, AngularFireStorageModule} from '@angular/fire/storage';
+import {AngularFireStorage} from '@angular/fire/storage';
 import {finalize} from 'rxjs/operators';
 import {aliasTransformFactory} from '@angular/compiler-cli/src/ngtsc/transform';
 import {AngularFireDatabase, AngularFireList} from '@angular/fire/database';
@@ -16,6 +16,13 @@ import {User} from 'firebase';
   styleUrls: ['./chat-area.component.scss']
 })
 export class ChatAreaComponent implements OnInit {
+
+  constructor(private commonService: CommonService,
+              private afs: AngularFirestore,
+              private storage: AngularFireStorage) {
+    this.currentUserId = Object.values(JSON.parse(localStorage.getItem('user') as string))[0];
+  }
+
   @Input() randomSeed!: string;
   subs!: Subscription;
   paramValue!: string;
@@ -25,15 +32,6 @@ export class ChatAreaComponent implements OnInit {
   currentUserId!: unknown;
   imageUrl: string | undefined;
   imageUploaded = false;
-
-  /*imageList: AngularFireList<any> | undefined;*/
-
-  constructor(private commonService: CommonService,
-              private afs: AngularFirestore,
-              private storage: AngularFireStorage,
-              private firedatabase: AngularFireDatabase) {
-    this.currentUserId = Object.values(JSON.parse(localStorage.getItem('user') as string))[0];
-  }
 
   ngOnInit(): void {
     this.subs = this.commonService.pathParam.subscribe(value => {
@@ -106,6 +104,7 @@ export class ChatAreaComponent implements OnInit {
     if (this.paramValue !== '') {
       const file = event.target.files[0];
       const type = file.type;
+      // type.indexOf('CR2');
       const filename = file.name;
       // Notification API stuff
       let isImage: boolean;
@@ -114,7 +113,12 @@ export class ChatAreaComponent implements OnInit {
         isImage = false;
         // show notification if file is not an image
         this.getPermissionUpload(isImage, file);
+        return;
       } else {
+        if (type.indexOf('CR2') === 6 || type.indexOf('CR3') === 6) {
+          alert('transform raw images to valid image format');
+          return;
+        }
         // console.log(file);
         isImage = true;
         // we add time so we can upload the same image multiple times to our database
@@ -163,20 +167,25 @@ export class ChatAreaComponent implements OnInit {
   getPermissionUpload(isImage: boolean, file: any): void {
     const permission = Notification.permission;
     const type = file.type;
-    const filename = file.name;
+    const fileName = file.name;
+    let typeName = type.split('/')[1];
+    // tslint:disable-next-line:triple-equals
+    if (type == ''){
+      typeName = fileName.split('.')[1];
+    }
 
     if (permission === 'granted') {
-      this.showNotificationUpload(filename, type, isImage);
+      this.showNotificationUpload(fileName, typeName, isImage);
     } else if (permission !== 'denied') {
       Notification.requestPermission().then(getPermission => {
         if (getPermission === 'granted') {
-          this.showNotificationUpload(filename, type, isImage);
+          this.showNotificationUpload(fileName, typeName, isImage);
         }
       });
     } else if (permission === 'denied' && isImage) {
-      alert(`${filename}: has been uploaded`);
+      alert(`${fileName} has been uploaded`);
     } else {
-      alert('Image hasn\'t been uploaded\n' + `${filename}: ${type.split('/')[1]} is not an image`);
+      alert('File hasn\'t been uploaded\n' + `${fileName}\n${typeName} is not an image`);
     }
   }
 
@@ -211,8 +220,8 @@ export class ChatAreaComponent implements OnInit {
   showNotificationUpload(filename: string, type: string, isImage: boolean): void {
     let mTitle: string;
     let message: string;
-    isImage === true ? mTitle = `${filename} has been uploaded` : mTitle = 'Image hasn\'t been uploaded';
-    isImage === true ? message = '' : message = `${filename}: ${type.split('/')[1]} is not an image`;
+    isImage === true ? mTitle = `${filename} has been uploaded` : mTitle = 'File hasn\'t been uploaded';
+    isImage === true ? message = '' : message = `${filename}\n${type} is not an image`;
 
     if (isImage) {
       const notification = new Notification(mTitle,

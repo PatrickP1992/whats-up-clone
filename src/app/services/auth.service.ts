@@ -75,7 +75,7 @@ export class AuthService {
     });
   }
 
-  // Reset Forggot password
+  // Reset Forgot password
   ForgotPassword(passwordResetEmail: string): Promise<void> {
     return this.afAuth.sendPasswordResetEmail(passwordResetEmail)
       .then(() => {

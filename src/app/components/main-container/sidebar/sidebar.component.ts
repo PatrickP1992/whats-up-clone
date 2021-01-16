@@ -68,6 +68,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
           alert('Sorry, room already present');
           return;
         } else {
+          if (search.length <= 0){
+            alert('room must have at least 1 character');
+            return;
+          }
           if (form.value.search !== null) {
             this.afs.collection('rooms').add({
               name: form.value.search
